@@ -12,3 +12,6 @@ run:
 
 valgrind:
 	valgrind --leak-check=full --track-origins=yes -s bin/unibot
+
+bench:
+	go test -bench ./...
