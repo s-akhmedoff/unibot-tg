@@ -14,7 +14,7 @@ type definition struct {
 	Type       string `json:"model"`
 	Definition string `json:"definition"`
 	Example    string `json:"example,omitempty"`
-	ImageUrl   string `json:"image_url,omitempty"`
+	ImageURL  string `json:"image_url,omitempty"`
 }
 
 type definite struct {
@@ -30,8 +30,8 @@ func (d definite) String() string {
 		if d.Definition[i].Example != "" {
 			result += "Example: " + d.Definition[i].Example + "\n"
 		}
-		if d.Definition[i].ImageUrl != "" {
-			result += "Image URL: " + d.Definition[i].ImageUrl
+		if d.Definition[i].ImageURL != "" {
+			result += "Image URL: " + d.Definition[i].ImageURL
 		}
 		result += "\n"
 	}
@@ -40,11 +40,17 @@ func (d definite) String() string {
 }
 
 func getJSON(url, apiKey string) []byte {
-	req, _ := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", url, nil)
+	utils.FailOnError(err, "Failed to create new request")
 	req.Header.Add("Authorization", fmt.Sprintf(" Token %s", apiKey))
-	res, _ := http.DefaultClient.Do(req)
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
+	res, err := http.DefaultClient.Do(req)
+	utils.FailOnError(err, "Failed to get response")
+	defer func() {
+		err := res.Body.Close()
+		utils.FailOnError(err, "Failed to close")
+	}()
+	body, err := ioutil.ReadAll(res.Body)
+	utils.FailOnError(err, "Failed to read body")
 	return body
 
 }

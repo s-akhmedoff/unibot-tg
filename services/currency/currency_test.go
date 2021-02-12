@@ -1,13 +1,13 @@
 package currency
 
 import (
-	"github.com/joho/godotenv"
 	"testing"
+	"unibot-tg/config"
 )
 
 func TestGetCurrency(t *testing.T) {
 
-	godotenv.Load("../.env")
+	config := config.Load(true)
 
 	type args struct {
 		arg string
@@ -25,7 +25,7 @@ func TestGetCurrency(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GetCurrency(tt.args.arg); string([]byte(got)[:2]) != tt.want {
+			if got := GetCurrency(tt.args.arg, *config); string([]byte(got)[:2]) != tt.want {
 				t.Errorf("GetCurncy() = %v, want %v", got, tt.want)
 			}
 		})
