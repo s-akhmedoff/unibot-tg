@@ -20,14 +20,14 @@ type globalQuote struct {
 }
 
 type stock struct {
-	Global_Quote globalQuote `json:"Global Quote,omitempty"`
+	GlobalQuote globalQuote `json:"Global Quote,omitempty"`
 }
 
 func (s stock) String() string {
-	if s.Global_Quote.Symbol == "" {
+	if s.GlobalQuote.Symbol == "" {
 		return "Failed to get stock, try another one"
 	}
-	result := fmt.Sprintf("Symbol: %s\nOpen: %s\nHigh: %s\tLow: %s\nPrice: %s\nVolume: %s\nPrevious Close: %s\nChange: %s\tChange Percent: %s\n", s.Global_Quote.Symbol, s.Global_Quote.Open, s.Global_Quote.High, s.Global_Quote.Low, s.Global_Quote.Price, s.Global_Quote.Volume, s.Global_Quote.PrevCl, s.Global_Quote.Change, s.Global_Quote.Percent)
+	result := fmt.Sprintf("Symbol: %s\nOpen: %s\nHigh: %s\tLow: %s\nPrice: %s\nVolume: %s\nPrevious Close: %s\nChange: %s\tChange Percent: %s\n", s.GlobalQuote.Symbol, s.GlobalQuote.Open, s.GlobalQuote.High, s.GlobalQuote.Low, s.GlobalQuote.Price, s.GlobalQuote.Volume, s.GlobalQuote.PrevCl, s.GlobalQuote.Change, s.GlobalQuote.Percent)
 	return result
 }
 
