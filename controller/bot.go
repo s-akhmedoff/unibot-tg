@@ -53,6 +53,7 @@ func (b *bot) ConfigureBot(timeout int) {
 //ListenBot - ...
 func (b *bot) ListenBot() {
 	updates, err := b.botObject.GetUpdatesChan(update)
+	utils.FailOnError(err, "Failed to get updates")
 
 	for upd := range updates {
 		if upd.Message == nil {
