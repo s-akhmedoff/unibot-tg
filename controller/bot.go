@@ -20,7 +20,7 @@ type bot struct {
 }
 
 var (
-	update = tgbotapi.NewUpdate(0)
+	update        = tgbotapi.NewUpdate(0)
 	configuration config.Config
 )
 

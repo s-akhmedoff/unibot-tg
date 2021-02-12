@@ -13,12 +13,12 @@ type Config struct {
 
 	LogLevel string
 
-	WeatherKey string
+	WeatherKey    string
 	TranslatorKey string
-	NewsKey string
-	LambasteKey string
-	BotKey string
-	CurrencyKey string
+	NewsKey       string
+	LambasteKey   string
+	BotKey        string
+	CurrencyKey   string
 	DefinitionKey string
 }
 

@@ -18,9 +18,9 @@ type definition struct {
 }
 
 type definite struct {
-	Definition		[]definition	`json:"definitions,omitempty"`
-	Word			string			`json:"word"`
-	Pronunciation	string			`json:"pronunciation"`
+	Definition    []definition `json:"definitions,omitempty"`
+	Word          string       `json:"word"`
+	Pronunciation string       `json:"pronunciation"`
 }
 
 func (d definite) String() string {
