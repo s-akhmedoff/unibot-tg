@@ -3,4 +3,4 @@ go:
   - 1.13
 install: true
 script:
-  - env GO111MODULE=on make build
+  - env GO111MODULE=on go build -o bin/unibot cmd/main.go

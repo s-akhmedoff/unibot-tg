@@ -15,7 +15,7 @@ func init() {
 	configuration = *configInner
 }
 
-func main(){
+func main() {
 	myBot := controller.NewBot(configuration.BotKey, configuration)
 	myBot.ConfigureBot(0)
 

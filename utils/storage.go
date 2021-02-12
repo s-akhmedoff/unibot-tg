@@ -2,7 +2,7 @@ package utils
 
 const (
 	//WeatherApiUrl - ...
-	WeatherApiUrl 		= "https://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&appid=%s"
+	WeatherApiUrl = "https://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&appid=%s"
 	//WeatherDefaultValue - ...
 	WeatherDefaultValue = "Tashkent"
 
@@ -38,4 +38,3 @@ const (
 		"/cli command - Execute command on the host\n" +
 		"/generator n - Generate secure n-length password, default 15"
 )
-

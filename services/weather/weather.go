@@ -4,33 +4,33 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
-	"unibot-tg/utils"
 	"unibot-tg/config"
+	"unibot-tg/utils"
 )
 
 type weather struct {
 	Sys struct {
 		Sunrise int `json:"sunrise"`
 		Sunset  int `json:"sunset"`
-	}      `json:"sys"`
+	} `json:"sys"`
 	Weather []struct {
 		Main        string `json:"main"`
 		Description string `json:"description"`
 	} `json:"weather"`
-	Main    struct {
+	Main struct {
 		Temp      float64 `json:"temp"`
 		FeelsLike float64 `json:"feels_like"`
 		Pressure  int     `json:"pressure"`
 		Humidity  int     `json:"humidity"`
-	}      `json:"main"`
-	Wind    struct {
+	} `json:"main"`
+	Wind struct {
 		Speed float64 `json:"speed"`
-	}      `json:"wind"`
-	Clouds  struct {
+	} `json:"wind"`
+	Clouds struct {
 		All int `json:"all"`
-	}    `json:"clouds"`
-	Name    string		`json:"name"`
-	Cod 	interface{}			`json:"cod"`
+	} `json:"clouds"`
+	Name string      `json:"name"`
+	Cod  interface{} `json:"cod"`
 }
 
 func (w weather) String() string {
