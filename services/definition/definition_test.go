@@ -7,6 +7,7 @@ import (
 
 func TestGetDefinition(t *testing.T) {
 	config := config.Load(true)
+	
 	type args struct {
 		arg string
 	}
@@ -16,9 +17,9 @@ func TestGetDefinition(t *testing.T) {
 		want string
 	}{
 		{
-			"correct",
-			args{"hello"},
-			"temp",
+			"incorrect",
+			args{"red"},
+			"No definition was found for word: red",
 		},
 	}
 	for _, tt := range tests {

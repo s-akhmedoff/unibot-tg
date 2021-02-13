@@ -12,9 +12,9 @@ func TestGenerator(t *testing.T) {
 		want string
 	}{
 		{
-			"wrong",
-			args{},
-			"Error",
+			"incorrect",
+			args{"a"},
+			"\n",
 		},
 	}
 	for _, tt := range tests {
