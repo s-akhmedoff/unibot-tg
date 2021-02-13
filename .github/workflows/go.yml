@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  test:
+  cover:
     runs-on: ubuntu-latest
     env:
       CODECOV_TOKEN: "c3a39bae-5866-4d7d-8cd4-ef523b745f9d"
@@ -18,9 +18,6 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.15
-
-    - name: Cover
-      run: make cover
     
     - name: CodeCov
       run:  bash <(curl -s https://codecov.io/bash)
