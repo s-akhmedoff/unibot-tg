@@ -19,9 +19,6 @@ jobs:
       with:
         go-version: 1.15
 
-    - name: Test
-      run: touch .env && go test -v ./...
-
     - name: Cover
       run: make cover
     
