@@ -2,4 +2,3 @@ bin/
 vendor/
 .idea/
 .env
-profile.cov
