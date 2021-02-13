@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    runs: ubuntu-latest
+    runs-on: ubuntu-latest
     env:
       CODECOV_TOKEN: "c3a39bae-5866-4d7d-8cd4-ef523b745f9d"
     steps:
