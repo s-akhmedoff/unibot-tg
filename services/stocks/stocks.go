@@ -37,7 +37,7 @@ func GetStocks(symbol string, config config.Config) string {
 		utils.SetDefaultValue(&symbol, utils.StocksDefaultValue)
 	}
 
-	url := fmt.Sprintf(utils.StocksApiUrl, symbol, config.CurrencyKey)
+	url := fmt.Sprintf(utils.StocksAPIURL, symbol, config.CurrencyKey)
 
 	stocks := new(stock)
 	err := json.Unmarshal(utils.GetJSON(url), stocks)

@@ -31,7 +31,7 @@ func GetCurrency(arg string, config config.Config) string {
 	if arg == "" {
 		utils.SetDefaultValue(&arg, fmt.Sprintf("%s %s", utils.CurrencyDefaultValueFrom, utils.CurrencyDefaultValueTo))
 	}
-	url := fmt.Sprintf(utils.CurrencyApiUrl, strings.Split(arg, " ")[0], strings.Split(arg, " ")[1], config.CurrencyKey)
+	url := fmt.Sprintf(utils.CurrencyAPIURL, strings.Split(arg, " ")[0], strings.Split(arg, " ")[1], config.CurrencyKey)
 
 	exchange := new(exchanger)
 	err := json.Unmarshal(utils.GetJSON(url), &exchange)

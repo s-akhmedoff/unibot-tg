@@ -18,8 +18,8 @@ func TestGetDefinition(t *testing.T) {
 	}{
 		{
 			"incorrect",
-			args{"red"},
-			"No definition was found for word: red",
+			args{"qaq"},
+			"No definition was found for word: qaq",
 		},
 	}
 	for _, tt := range tests {

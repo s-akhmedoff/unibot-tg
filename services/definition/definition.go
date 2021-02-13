@@ -63,7 +63,7 @@ func GetDefinition(arg string, config config.Config) string {
 	if arg == "" {
 		utils.SetDefaultValue(&arg, utils.DefinitionDefaultValue)
 	}
-	url := fmt.Sprintf(utils.DefinitionApiUrl, arg)
+	url := fmt.Sprintf(utils.DefinitionAPIURL, arg)
 
 	definitionResult := new(definite)
 	err := json.Unmarshal(getJSON(url, config.DefinitionKey), definitionResult)

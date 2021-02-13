@@ -57,7 +57,7 @@ func GetWeather(country string, config config.Config) string {
 	if country == "" {
 		utils.SetDefaultValue(&country, utils.WeatherDefaultValue)
 	}
-	url := fmt.Sprintf(utils.WeatherApiUrl, country, config.WeatherKey)
+	url := fmt.Sprintf(utils.WeatherAPIURL, country, config.WeatherKey)
 
 	ByteData := utils.GetJSON(url)
 

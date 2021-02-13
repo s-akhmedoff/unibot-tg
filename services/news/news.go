@@ -31,7 +31,7 @@ func (n news) String() string {
 func GetNews(domain string, config config.Config) string {
 	utils.SetDefaultValue(&domain, utils.NewsDefaultValue)
 
-	url := fmt.Sprintf(utils.NewsApiUrl, domain, config.NewsKey)
+	url := fmt.Sprintf(utils.NewsAPIURL, domain, config.NewsKey)
 
 	newsCollection := new(news)
 	err := json.Unmarshal(utils.GetJSON(url), newsCollection)

@@ -10,8 +10,5 @@ test:
 run:
 	./bin/unibot
 
-valgrind:
-	valgrind --leak-check=full --track-origins=yes -s bin/unibot
-
-bench:
-	go test -bench ./..
+cover:
+	go test -v -coverprofile=profile.cov ./...
