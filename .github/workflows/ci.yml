@@ -9,8 +9,6 @@ on:
 jobs:
   cover:
     runs-on: ubuntu-latest
-    env:
-      CODECOV_TOKEN: "c3a39bae-5866-4d7d-8cd4-ef523b745f9d"
     steps:
     - uses: actions/checkout@v2
 
@@ -19,9 +17,13 @@ jobs:
       with:
         go-version: 1.15
     
-    - name: CodeCov
-      run:  bash <(curl -s https://codecov.io/bash)
-
+    - name: Codecov
+      uses: codecov/codecov-action@v1.2.1
+      with:
+        token: "c3a39bae-5866-4d7d-8cd4-ef523b745f9d"
+        directory: .
+        file: profile.cover
+        
   build:
     runs-on: ubuntu-latest
 
