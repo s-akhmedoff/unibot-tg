@@ -1,10 +1,8 @@
 package generator
 
-import (
-	"unibot-tg/utils/generate"
-)
+import "github.com/s-akhmedoff/unibot-tg/utils/generate"
 
-//Generate - ...
+// Generate - ...
 func Generate(arg string) string {
 	return generate.Password(arg)
 }

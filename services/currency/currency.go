@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
-	"unibot-tg/config"
-	"unibot-tg/utils"
+
+	"github.com/s-akhmedoff/unibot-tg/config"
+	"github.com/s-akhmedoff/unibot-tg/utils"
 )
 
 type exchanger struct {
@@ -26,14 +27,19 @@ func (e exchanger) String() string {
 	return e.RCE.Ex[:5] + " " + e.RCE.ToC
 }
 
-// GetCurrency - get currency rate
+// GetCurrency - get currency rate.
 func GetCurrency(arg string, config config.Config) string {
 	if arg == "" {
 		utils.SetDefaultValue(&arg, fmt.Sprintf("%s %s", utils.CurrencyDefaultValueFrom, utils.CurrencyDefaultValueTo))
 	}
-	url := fmt.Sprintf(utils.CurrencyAPIURL, strings.Split(arg, " ")[0], strings.Split(arg, " ")[1], config.CurrencyKey)
+
+	url := fmt.Sprintf(utils.CurrencyAPIURL,
+		strings.Split(arg, " ")[0],
+		strings.Split(arg, " ")[1],
+		config.Currency.APIKey)
 
 	exchange := new(exchanger)
+
 	err := json.Unmarshal(utils.GetJSON(url), &exchange)
 	utils.FailOnError(err, "Failed to unmarshal")
 

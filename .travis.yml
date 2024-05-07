@@ -1,6 +1,6 @@
 language: go
 go:
-  - 1.13
-install: true
+  - 1.22
+install: false
 script:
-  - env GO111MODULE=on go build -o bin/unibot cmd/main.go
+  - go build -o bin/unibot cmd/main.go

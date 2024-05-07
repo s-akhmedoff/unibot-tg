@@ -10,5 +10,8 @@ test:
 run:
 	./bin/unibot
 
+lint:
+	golangci-lint run
+
 cover:
 	go test -v -coverprofile=profile.cover ./...

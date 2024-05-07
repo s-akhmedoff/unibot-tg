@@ -1,20 +1,22 @@
 package definition
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
-	"unibot-tg/config"
-	"unibot-tg/utils"
+
+	"github.com/s-akhmedoff/unibot-tg/config"
+	"github.com/s-akhmedoff/unibot-tg/utils"
 )
 
 type definition struct {
 	Type       string `json:"model"`
 	Definition string `json:"definition"`
 	Example    string `json:"example,omitempty"`
-	ImageURL  string `json:"image_url,omitempty"`
+	ImageURL   string `json:"image_url,omitempty"`
 }
 
 type definite struct {
@@ -25,14 +27,18 @@ type definite struct {
 
 func (d definite) String() string {
 	var result string
-	for i := range d.Definition {
-		result += "Type: " + d.Definition[i].Type + "\nDefinition: " + d.Definition[i].Definition + "\n"
-		if d.Definition[i].Example != "" {
-			result += "Example: " + d.Definition[i].Example + "\n"
+
+	for _, def := range d.Definition {
+		result += "Type: " + def.Type + "\nDefinition: " + def.Definition + "\n"
+
+		if def.Example != "" {
+			result += "Example: " + def.Example + "\n"
 		}
-		if d.Definition[i].ImageURL != "" {
-			result += "Image URL: " + d.Definition[i].ImageURL
+
+		if def.ImageURL != "" {
+			result += "Image URL: " + def.ImageURL
 		}
+
 		result += "\n"
 	}
 
@@ -40,36 +46,45 @@ func (d definite) String() string {
 }
 
 func getJSON(url, apiKey string) []byte {
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, url, nil)
 	utils.FailOnError(err, "Failed to create new request")
-	req.Header.Add("Authorization", fmt.Sprintf(" Token %s", apiKey))
+
+	req.Header.Add("Authorization", " Token "+apiKey)
+
 	res, err := http.DefaultClient.Do(req)
 	utils.FailOnError(err, "Failed to get response")
+
 	defer func() {
 		err := res.Body.Close()
+
 		utils.FailOnError(err, "Failed to close")
 	}()
-	body, err := ioutil.ReadAll(res.Body)
-	utils.FailOnError(err, "Failed to read body")
-	return body
 
+	body, err := io.ReadAll(res.Body)
+	utils.FailOnError(err, "Failed to read body")
+
+	return body
 }
 
-//GetDefinition - Get definition of the word
+// GetDefinition - Get definition of the word.
 func GetDefinition(arg string, config config.Config) string {
 	if len(strings.Split(arg, " ")) > 1 {
 		return "Too many words!\nUsage: /definition word"
 	}
+
 	if arg == "" {
 		utils.SetDefaultValue(&arg, utils.DefinitionDefaultValue)
 	}
+
 	url := fmt.Sprintf(utils.DefinitionAPIURL, arg)
 
 	definitionResult := new(definite)
-	err := json.Unmarshal(getJSON(url, config.DefinitionKey), definitionResult)
+
+	err := json.Unmarshal(getJSON(url, config.Definition.APIKey), definitionResult)
 	if err != nil {
 		return "No definition was found for word: " + arg
 	}
+
 	utils.FailOnError(err, "Failed to unmarshal data")
 
 	return definitionResult.String()

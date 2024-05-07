@@ -3,9 +3,10 @@ package news
 import (
 	"encoding/json"
 	"fmt"
-	"unibot-tg/config"
-	"unibot-tg/services/news/model"
-	"unibot-tg/utils"
+
+	"github.com/s-akhmedoff/unibot-tg/config"
+	"github.com/s-akhmedoff/unibot-tg/services/news/model"
+	"github.com/s-akhmedoff/unibot-tg/utils"
 )
 
 type news struct {
@@ -27,11 +28,11 @@ func (n news) String() string {
 	return titles
 }
 
-//GetNews - ...
+// GetNews - ...
 func GetNews(domain string, config config.Config) string {
 	utils.SetDefaultValue(&domain, utils.NewsDefaultValue)
 
-	url := fmt.Sprintf(utils.NewsAPIURL, domain, config.NewsKey)
+	url := fmt.Sprintf(utils.NewsAPIURL, domain, config.News.APIKey)
 
 	newsCollection := new(news)
 	err := json.Unmarshal(utils.GetJSON(url), newsCollection)

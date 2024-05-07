@@ -1,9 +1,8 @@
-module unibot-tg
+module github.com/s-akhmedoff/unibot-tg
 
-go 1.15
+go 1.22.2
 
 require (
-	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible
-	github.com/joho/godotenv v1.3.0
-	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
+	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
+	github.com/sethvargo/go-envconfig v1.0.1
 )

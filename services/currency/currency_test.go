@@ -6,7 +6,6 @@ import (
 )
 
 func TestGetCurrency(t *testing.T) {
-
 	config := config.Load(true)
 
 	type args struct {

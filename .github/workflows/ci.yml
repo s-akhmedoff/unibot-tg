@@ -1,42 +1,65 @@
-name: Go
+name: Lint-Test-Build
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
   pull_request:
-    branches: [ master ]
+
+permissions:
+  contents: read
 
 jobs:
+  lint:
+    strategy:
+      matrix:
+        go: [ '1.22' ]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    name: lint
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v5
+        with:
+          version: latest
+
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.22
+      - name: Test
+        run: go test -v ./...
+
   cover:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.22
+      - name: Codecov
+        uses: codecov/codecov-action@v1.2.1
+        with:
+          token: "c3a39bae-5866-4d7d-8cd4-ef523b745f9d"
+          directory: .
+          file: profile.cover
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.15
-    
-    - name: Codecov
-      uses: codecov/codecov-action@v1.2.1
-      with:
-        token: "c3a39bae-5866-4d7d-8cd4-ef523b745f9d"
-        directory: .
-        file: profile.cover
-        
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.15
-
-    - name: Format
-      run: gofmt -s -w .    
-
-    - name: Build
-      run: go build -v ./...
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.22
+      - name: Build
+        run: go build -v ./...
+        env:
+          BOT_API_KEY= ${{ secrets.BOT_API_KEY }}

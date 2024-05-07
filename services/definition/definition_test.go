@@ -7,7 +7,7 @@ import (
 
 func TestGetDefinition(t *testing.T) {
 	config := config.Load(true)
-	
+
 	type args struct {
 		arg string
 	}

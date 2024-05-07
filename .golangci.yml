@@ -1,0 +1,42 @@
+run:
+  issues-exit-code: 1
+  tests: false
+  allow-parallel-runners: true
+  allow-serial-runners: true
+  go: '1.22'
+
+output:
+  formats:
+    - format: colored-line-number
+      path: stdout
+  print-issued-lines: true
+  print-linter-name: true
+  uniq-by-line: false
+  path-prefix: ""
+  sort-results: true
+  sort-order:
+    - linter
+    - severity
+    - file
+  show-stats: true
+
+linters:
+  enable-all: true
+  disable:
+    - ireturn
+    - execinquery
+    - gomnd
+    - depguard
+    - tagliatelle
+    - wsl
+    - wrapcheck
+    - exhaustruct
+
+linters-settings:
+  gosec:
+    excludes:
+      - G204
+
+issues:
+  exclude-dirs-use-default: true
+  exclude-use-default: true

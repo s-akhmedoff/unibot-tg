@@ -1,6 +1,6 @@
 package model
 
-//Article - ...
+// Article - ...
 type Article struct {
 	Source        source `json:"source"`
 	Title         string `json:"title"`

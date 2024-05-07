@@ -1,23 +1,42 @@
 package main
 
 import (
-	"unibot-tg/config"
-	"unibot-tg/controller"
+	"log"
+	"os"
+	"os/signal"
+	"syscall"
+
+	"github.com/s-akhmedoff/unibot-tg/config"
+	"github.com/s-akhmedoff/unibot-tg/controller"
 )
 
-var configuration config.Config
+func main() {
+	shutdownSignal := make(chan os.Signal, 1)
+	signal.Notify(shutdownSignal, syscall.SIGINT, syscall.SIGTERM)
 
-func init() {
-	configInner := config.Load(false)
-	if configInner == nil {
-		panic("Unable to load configuration")
-	}
-	configuration = *configInner
+	shutdown := make(chan struct{})
+
+	cfg := config.NewConfig()
+
+	go func() {
+		Run(cfg)
+
+		<-shutdown
+
+		os.Exit(0)
+	}()
+
+	<-shutdownSignal
+
+	close(shutdown)
 }
 
-func main() {
-	myBot := controller.NewBot(configuration.BotKey, configuration)
-	myBot.ConfigureBot(0)
+func Run(cfg config.Config) {
+	bot := controller.NewBot(cfg)
 
-	myBot.ListenBot()
+	go func() {
+		if err := bot.Listen(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 }

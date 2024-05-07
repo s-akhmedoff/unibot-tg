@@ -1,55 +1,53 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
+	"context"
 	"log"
-	"os"
-	"unibot-tg/utils"
+
+	"github.com/sethvargo/go-envconfig"
 )
 
-//Config - app configuration structure
+const ApplicationLabel = ""
+
+// Config - app configuration structure.
 type Config struct {
-	App string
-
-	LogLevel string
-
-	WeatherKey    string
-	TranslatorKey string
-	NewsKey       string
-	LambasteKey   string
-	BotKey        string
-	CurrencyKey   string
-	DefinitionKey string
+	App         string `env:"APP"`
+	Environment string `env:"ENVIRONMENT"`
+	RedisURL    string `env:"REDIS_URL"`
+	CacheTLL    string `env:"CACHE_TLL"`
+	HTTPPort    string `env:"HTTP_PORT"`
+	HTTPHost    string `env:"HTTP_HOST,default=localhost"`
+	MetricsPort string `env:"METRICS_PORT"`
+	TracerURL   string `env:"TRACER_URL"`
+	LogLevel    string `env:"LOG_LEVEL"`
+	BotAPIKey   string `env:"BOT_API_KEY"`
+	Services
 }
 
-//Load - load configuration from OS environment
-func Load(test bool) *Config {
-	if !test {
-		err := godotenv.Load()
-		utils.FailOnError(err, "Failed to load .env file")
-		if err != nil {
-			return nil
-		}
-	} else {
-		err := godotenv.Load("../../.env")
-		utils.FailOnError(err, "Failed to load .env file")
-		if err != nil {
-			return nil
-		}
+func NewConfig() Config {
+	var cfg Config
+
+	if err := envconfig.ProcessWith(context.Background(), &envconfig.Config{
+		Target:   &cfg,
+		Lookuper: envconfig.OsLookuper(),
+	}); err != nil {
+		log.Fatal(err)
 	}
 
-	log.Println(".env file was successfully loaded")
-	config := Config{}
+	return cfg
+}
 
-	config.App = os.Getenv("APP")
-	config.BotKey = os.Getenv("BOT_API")
-	config.CurrencyKey = os.Getenv("CURRENCY_API")
-	config.DefinitionKey = os.Getenv("DEFINITION_API")
-	config.LambasteKey = os.Getenv("LAMBASTE_API")
-	config.LogLevel = os.Getenv("LOG_LEVEL")
-	config.NewsKey = os.Getenv("NEWS_API")
-	config.TranslatorKey = os.Getenv("TRANSLATOR_API")
-	config.WeatherKey = os.Getenv("WEATHER_API")
+type Services struct {
+	Weather    Service `env:"WEATHER_SERVICE_"`
+	Translator Service `env:"TRANSLATOR_SERVICE_"`
+	News       Service `env:"NEWS_SERVICE_"`
+	Currency   Service `env:"CURRENCY_SERVICE_"`
+	Definition Service `env:"DEFINITION_SERVICE_"`
+}
 
-	return &config
+type Service struct {
+	Name    string `env:"PROVIDER"`
+	Version string `env:"VERSION"`
+	URL     string `env:"URL"`
+	APIKey  string `env:"API_KEY"`
 }

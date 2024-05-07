@@ -3,9 +3,12 @@ package weather
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strconv"
 	"time"
-	"unibot-tg/config"
-	"unibot-tg/utils"
+
+	"github.com/s-akhmedoff/unibot-tg/config"
+	"github.com/s-akhmedoff/unibot-tg/utils"
 )
 
 type weather struct {
@@ -35,10 +38,11 @@ type weather struct {
 
 func (w weather) String() string {
 	switch w.Cod {
-	case "404":
+	case strconv.Itoa(http.StatusNotFound):
 		return "Incorrect City!"
-	case 200:
+	case strconv.Itoa(http.StatusOK):
 	}
+
 	return fmt.Sprintf("\tWeather"+
 		"\nHey there! Now in %s '%s', I mean %s"+
 		"\nTemperature is %s °C, but feels like %s °C"+
@@ -47,17 +51,18 @@ func (w weather) String() string {
 		"\nYou should know that:"+
 		"\nSunrise at: %s"+
 		"\nSunset at: %s", w.Name, w.Weather[0].Main, w.Weather[0].Description, fmt.Sprintf("%.2f", w.Main.Temp),
-		fmt.Sprintf("%.2f", w.Main.FeelsLike), fmt.Sprintf("%d", w.Main.Pressure), fmt.Sprintf("%d", w.Main.Humidity),
+		fmt.Sprintf("%.2f", w.Main.FeelsLike), strconv.Itoa(w.Main.Pressure), strconv.Itoa(w.Main.Humidity),
 		fmt.Sprintf("%.2f", w.Wind.Speed), time.Unix(int64(w.Sys.Sunrise), 0).Format("01.02 15:04"),
 		time.Unix(int64(w.Sys.Sunset), 0).Format("01.02 15:04"))
 }
 
-//GetWeather - Get weather in `country` provided by OpenWeatherMap
+// GetWeather - Get weather in `country` provided by OpenWeatherMap.
 func GetWeather(country string, config config.Config) string {
 	if country == "" {
 		utils.SetDefaultValue(&country, utils.WeatherDefaultValue)
 	}
-	url := fmt.Sprintf(utils.WeatherAPIURL, country, config.WeatherKey)
+
+	url := fmt.Sprintf(utils.WeatherAPIURL, country, config.Weather.APIKey)
 
 	ByteData := utils.GetJSON(url)
 

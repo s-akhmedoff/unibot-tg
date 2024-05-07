@@ -1,98 +1,56 @@
 package controller
 
 import (
-	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
-	"strings"
-	"unibot-tg/config"
-	"unibot-tg/services/cli"
-	"unibot-tg/services/currency"
-	"unibot-tg/services/definition"
-	"unibot-tg/services/generator"
-	"unibot-tg/services/news"
-	"unibot-tg/services/stocks"
-	"unibot-tg/services/weather"
-	"unibot-tg/utils"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/s-akhmedoff/unibot-tg/config"
 )
 
-type bot struct {
-	botObject *tgbotapi.BotAPI
+type Bot struct {
+	bot *tgbotapi.BotAPI
 }
 
-var (
-	update        = tgbotapi.NewUpdate(0)
-	configuration config.Config
-)
-
-// NewBot - ...
-func NewBot(token string, config config.Config) bot {
-	configuration = config
-
-	simpleBot, err := tgbotapi.NewBotAPI(token)
-	utils.FailOnError(err, "Failed to create a Bot")
-
-	botStruct := bot{
-		simpleBot,
+func NewBot(cfg config.Config) *Bot {
+	bot, err := tgbotapi.NewBotAPI(cfg.BotAPIKey)
+	if err != nil {
+		log.Panic(err)
 	}
 
-	return botStruct
-}
+	bot.Debug = true
 
-// ConfigureBot - ...
-func (b *bot) ConfigureBot(timeout int) {
-	if timeout == 0 {
-		timeout = 60
+	log.Printf("Authorized on account %s", bot.Self.UserName)
+
+	return &Bot{
+		bot: bot,
 	}
-	b.botObject.Debug = true
-
-	log.Printf("Authorized on %s", b.botObject.Self.FirstName)
-
-	update.Timeout = timeout
 }
 
-//ListenBot - ...
-func (b *bot) ListenBot() {
-	updates, err := b.botObject.GetUpdatesChan(update)
-	utils.FailOnError(err, "Failed to get updates")
+func (b *Bot) Listen() error {
+	me, err := b.bot.GetMe()
+	if err != nil {
+		return err
+	}
 
-	for upd := range updates {
-		if upd.Message == nil {
-			continue
-		} else if !upd.Message.IsCommand() {
-			msg := tgbotapi.NewMessage(upd.Message.Chat.ID, upd.Message.Text)
-			_, err = b.botObject.Send(msg)
-			utils.FailOnError(err, "Failed to send")
-		} else if upd.Message.IsCommand() {
-			msg := tgbotapi.NewMessage(upd.Message.Chat.ID, "")
-			switch upd.Message.Command() {
-			case "help":
-				msg.Text = utils.HelpDefaultResponse
-			case "start":
-				msg.Text = "..."
-			case "weather":
-				country := strings.Split(upd.Message.CommandArguments(), " ")
-				msg.Text = weather.GetWeather(country[0], configuration)
-			case "news":
-				msg.Text = news.GetNews(upd.Message.CommandArguments(), configuration)
-			case "stocks":
-				msg.Text = stocks.GetStocks(upd.Message.CommandArguments(), configuration)
-			case "currency":
-				msg.Text = currency.GetCurrency(upd.Message.CommandArguments(), configuration)
-			case "definition":
-				msg.Text = definition.GetDefinition(upd.Message.CommandArguments(), configuration)
-			case "generator":
-				msg.Text = generator.Generate(upd.Message.CommandArguments())
-			case "cli":
-				msg.Text = cli.Cli(upd.Message.CommandArguments())
-			default:
-				msg.Text = "Unknown Command"
+	log.Println(me.String())
+
+	u := tgbotapi.NewUpdate(0)
+	u.Timeout = 60
+
+	updates := b.bot.GetUpdatesChan(u)
+
+	for update := range updates {
+		if update.Message != nil {
+			log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
+
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text+"\nfrom bot")
+			msg.ReplyToMessageID = update.Message.MessageID
+
+			if _, err := b.bot.Send(msg); err != nil {
+				log.Println(err)
 			}
-			if msg.Text == "" {
-				msg.Text = "Empty"
-			}
-			_, errCommand := b.botObject.Send(msg)
-			utils.FailOnError(errCommand, "failed to send message")
 		}
-		log.Printf("[%s] %s", upd.Message.From.UserName, upd.Message.Text)
 	}
+
+	return nil
 }

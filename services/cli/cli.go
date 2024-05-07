@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+const _limit = 4070
+
 type preparedCommand struct {
 	command string
 	args    []string
@@ -17,22 +19,24 @@ func (pc *preparedCommand) format(raw string) {
 	pc.args = split[1:]
 }
 
-//Cli - execute command
+// Cli - execute command.
 func Cli(arg string) string {
 	if arg == "" {
 		commandNotInputted := "Command is empty"
 		log.Println(commandNotInputted)
+
 		return commandNotInputted
 	}
 
 	var command preparedCommand
+
 	command.format(arg)
 
 	cmd := exec.Command(command.command, command.args...)
 	out, err := cmd.CombinedOutput()
-
 	if err != nil {
 		log.Println(err)
+
 		return "Error detected!"
 	}
 
@@ -40,8 +44,8 @@ func Cli(arg string) string {
 		out = []byte("Done")
 	}
 
-	if len(out) > 4070 {
-		return string(out)[:4070] + "\n"
+	if len(out) > _limit {
+		return string(out)[:_limit] + "\n"
 	}
 
 	return string(out)
